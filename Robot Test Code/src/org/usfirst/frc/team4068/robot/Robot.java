@@ -2,6 +2,7 @@
 package org.usfirst.frc.team4068.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Talon;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,8 +23,9 @@ public class Robot extends IterativeRobot {
     /**
      * This function is called periodically during autonomous
      */
+    Talon test = new Talon(5);
     public void autonomousPeriodic() {
-
+        test.set(1);
     }
 
     /**

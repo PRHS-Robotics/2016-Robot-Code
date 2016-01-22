@@ -9,18 +9,26 @@
  */
 package org.usfirst.frc.team4068.robot.lib;
 
+import org.usfirst.frc.team4068.robot.lib.Log.Level;
+
 @SuppressWarnings("rawtypes")
 public class References {
 	
 	public static Class CLASS_AUTONOMOUS;
 	public static Class CLASS_TELEOP;
 	public static Class CLASS_TEST;
+	public static final String CLASSNAME_TELEOP;
+	public static final String CLASSNAME_AUTONOMOUS;
+	public static final String CLASSNAME_TEST;
+	public static final String LOG_FILE = "/log.txt";
+	public static final Level LOGLEVEL_CONSOLE = Level.ALL;
+	public static final Level LOGLEVEL_FILE = Level.INFO;
 	
 	static{
 		//Creates constants with the classes and class names for teleop, autonomous, and test
-		final String CLASSNAME_TELEOP = "org.usfirst.frc.team4068.robot.teamCode.Teleop";
-		final String CLASSNAME_AUTONOMOUS = "org.usfirst.frc.team4068.robot.teamCode.Autonomous";
-		final String CLASSNAME_TEST = "org.usfirst.frc.team4068.robot.teamCode.Test";
+		CLASSNAME_TELEOP = "org.usfirst.frc.team4068.robot.teamCode.Teleop";
+		CLASSNAME_AUTONOMOUS = "org.usfirst.frc.team4068.robot.teamCode.Autonomous";
+		CLASSNAME_TEST = "org.usfirst.frc.team4068.robot.teamCode.Test";
 		try {
 			CLASS_TELEOP = Class.forName(CLASSNAME_TELEOP);
 			CLASS_AUTONOMOUS = Class.forName(CLASSNAME_AUTONOMOUS);
