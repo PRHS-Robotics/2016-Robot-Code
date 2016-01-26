@@ -20,7 +20,7 @@ public class References {
 	public static final String CLASSNAME_TELEOP;
 	public static final String CLASSNAME_AUTONOMOUS;
 	public static final String CLASSNAME_TEST;
-	public static final String LOG_FILE = "/log.txt";
+	public static final String LOG_FILE = "/home/lvuser/log.txt";
 	public static final Level LOGLEVEL_CONSOLE = Level.ALL;
 	public static final Level LOGLEVEL_FILE = Level.INFO;
 	

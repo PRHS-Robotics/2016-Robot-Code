@@ -8,10 +8,10 @@ public class TargetingAssistant {
     static final double M = .2948; // kg
     static final double K = .006086; //coefficient to velocity in drag equation, takes all variables into account
     static final double G = 9.81; // m/s2, acceleration due to gravity
-    static double maxVelocity = 20; //m/s
-    static double velocityStep = .5; //m/s
+    static double maxVelocity = 10; //m/s
+    static double velocityStep = .1; //m/s
     static double minTheta = Math.toRadians(10); //degrees
-    static double maxTheta = Math.toRadians(70); //degrees
+    static double maxTheta = Math.toRadians(90); //degrees
     static double thetaStep = Math.toRadians(.5); //degrees
     static double maxHeight = 3; //m
     static double minHeight = 2.3; //m

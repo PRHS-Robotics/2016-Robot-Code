@@ -167,6 +167,26 @@ public class Robot extends IterativeRobot {
     	runningThreads.clear();
     }
     
+    public void disabledInit(){
+        
+    }
+    
+    public void disabledPeriodic(){
+        
+    }
+    
+    public void teleopPeriodic(){
+        
+    }
+    
+    public void autonomousPeriodic(){
+        
+    }
+    
+    public void testPeriodic(){
+        
+    }
+    
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface RunCode {

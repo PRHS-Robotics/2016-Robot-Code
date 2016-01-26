@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.networktables2.type.NumberArray;
 import edu.wpi.first.wpilibj.vision.AxisCamera;
 
 public class Teleop {
@@ -25,7 +26,7 @@ public class Teleop {
     static double[] xValues;
     static int yRes = 640;
     static int xRes = 480;
-    static AxisCamera camera = new AxisCamera("10.40.68.11");
+    //static AxisCamera camera = new AxisCamera("10.40.68.11");
     
     
     //120 - 160
@@ -42,18 +43,51 @@ public class Teleop {
     
     @RunCode(loop=true)
     public static void setServo(){
-        camera.getImage(frame);
-        CameraServer.getInstance().setImage(frame);
+        //camera.getImage(frame);
+        //CameraServer.getInstance().setImage(frame);
         //xServo.setAngle(0);
         //yServo.setAngle(160);
     }
+    
+    static double goalWidth = .52;
+    static double viewAngle = 49.4;
+    static double heightGoal = 2.1;
+    static double camAngle = 45;
+    static double camHeight = .9;
     
     @RunCode(loop=false)
     public static void runMotor(){
         //new Talon(1).set(-1);
         //System.out.println("test");
         Log.logTrace("test");
-        LaunchVector test = TargetingAssistant.calculate(2);
+        
+        
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        //double[] targetnumY = vision.getNumberArray("centerY", new double[]{0});
+        //double[] targetnumX = vision.getNumberArray("centerX", new double[]{0});
+        double[] heightArray = vision.getNumberArray("height", new double[]{0});
+        double[] centerYArray = vision.getNumberArray("centerX", new double[]{0});
+        while (heightArray[0] == 0 || centerYArray[0] == 0){
+            heightArray = vision.getNumberArray("height", new double[]{0});
+            centerYArray = vision.getNumberArray("centerX", new double[]{0});
+        }
+        
+        //process goals
+        double height = heightArray[0];
+        double h1 = centerYArray[0] + (.5*height);
+        double h2 = 480 - centerYArray[0] - (.5*height);
+        
+        double theta = (viewAngle*height*h2)/((h1*height)+(height*h2)+1);
+        double distance = heightGoal/(Math.tan(Math.toRadians(theta+(camAngle-24.7))));
+        Log.logInfo("Distance: "+distance);
+        
+        LaunchVector test = TargetingAssistant.calculate(distance);
         if (!(test == null)){
             Log.logInfo("Launch info for 2m");
             Log.logInfo("Velocity: " + test.getVelocity());
@@ -61,6 +95,8 @@ public class Teleop {
         }else{
             Log.logInfo("Nothing found");
         }
+        //206 cm distance
+        //52 cm width
     }
     
     /*
