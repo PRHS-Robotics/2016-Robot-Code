@@ -9,10 +9,12 @@
  * */
 package org.usfirst.frc.team4068.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -35,19 +37,28 @@ import org.usfirst.frc.team4068.robot.lib.References;
 @SuppressWarnings("unchecked")
 public class Robot extends IterativeRobot {
     private static List<RunThread> runningThreads = new ArrayList<RunThread>();
+    private static List<RunThread> globalThreads = new ArrayList<RunThread>();
     SendableChooser autonomousPrograms = new SendableChooser();
     private static Object teleopClass;
     private static Object autoClass;
     private static Object testClass;
+    private final static String[] GRIP_ARGS = new String[] {
+            "/usr/local/frc/JRE/bin/java", "-jar",
+            "/home/lvuser/grip.jar", "/home/lvuser/project.grip" };
     static{
         try {
             teleopClass = References.CLASS_TELEOP.newInstance();
             autoClass = References.CLASS_AUTONOMOUS.newInstance();
             testClass = References.CLASS_TEST.newInstance();
+            
+            Runtime.getRuntime().exec(GRIP_ARGS);
         } catch (InstantiationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -56,7 +67,7 @@ public class Robot extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    public void robotInit() {
+    public void robotInit() { //use the initRobot method in Global.java to put in initial set up tasks
         Field[] autoFields = References.CLASS_AUTONOMOUS.getFields();
         for (Field field:autoFields){
             if (field.getType().equals(String.class) && field.isAnnotationPresent(autoProgram.class)){
@@ -78,6 +89,21 @@ public class Robot extends IterativeRobot {
             }
         }
         SmartDashboard.putData("Autonomous Chooser", autonomousPrograms);
+        
+        
+        //run global methods
+        Method[] globalMethods = References.CLASS_GLOBAL.getMethods();
+        for (Method method:globalMethods){
+            if (method.isAnnotationPresent(RunCode.class) && method.getAnnotation(RunCode.class).loop()){
+                RunLoop t = new RunLoop(method, References.CLASS_GLOBAL);
+                t.start();
+                globalThreads.add(t);
+            }else if(method.isAnnotationPresent(RunCode.class)){
+                RunOnce t = new RunOnce(method, References.CLASS_GLOBAL);
+                t.start();
+                globalThreads.add(t);
+            }
+        }
     }
 
     /**
