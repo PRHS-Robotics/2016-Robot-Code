@@ -24,12 +24,10 @@ public class Teleop {
     
     //static Talon motor3 = new Talon(3);
     //static Talon motor4 = new Talon(2);
-    static Joystick xboxController = new Joystick(0);
-    static Joystick joystick = new Joystick(1);
-    static Joystick coDriver = new Joystick(2);
-    //static RobotDrive drive = new RobotDrive(References.motor1, References.motor2);
-    static Servo xServo = new Servo(6);
-    static Servo yServo = new Servo(7);
+    
+    
+    //static Servo xServo = new Servo(6);
+    //static Servo yServo = new Servo(7);
     static NetworkTable vision;
     static double[] yValues;
     static double[] xValues;
@@ -39,17 +37,22 @@ public class Teleop {
     
     @RunCode(loop=true)
     public static void runLauncher(){
-        References.Motors.launcherMotor1.set(coDriver.getY());
-        References.Motors.launcherMotor2.set(coDriver.getY());
+        References.Motors.seatMotor.set(-References.Controllers.coDriver.getRawAxis(5));
         
-        References.Motors.seatMotor.set(coDriver.getRawAxis(5));
-        
-        if(coDriver.getRawButton(1)){
+        if(References.Controllers.coDriver.getRawButton(1)){
             References.Motors.launcherServo.set(0);
-            //References.launcherServo.set(0);
         }else{
             References.Motors.launcherServo.set(100);
         }
+        
+        /*
+        if(Math.abs(References.Controllers.coDriver.getRawAxis(3)) > .1){
+            References.Motors.launcherMotor1.set(2*References.Controllers.coDriver.getRawAxis(3));
+            References.Motors.launcherMotor2.set(2*References.Controllers.coDriver.getRawAxis(3));
+        }
+        */
+        References.Motors.launcherMotor1.set(-References.Controllers.coDriver.getRawAxis(1));
+        References.Motors.launcherMotor2.set(References.Controllers.coDriver.getRawAxis(1));
     }
     
     //120 - 160
@@ -71,7 +74,7 @@ public class Teleop {
         boolean ram = false;
         while (true){
             if (xbox){
-                if (xboxController.getRawButton(1)){
+                if (References.Controllers.xboxController.getRawButton(1)){
                     direction = !direction;
                     try {
                         Thread.sleep(500);
@@ -81,7 +84,7 @@ public class Teleop {
                     }
                 }
                 
-                if (xboxController.getRawButton(4)){
+                if (References.Controllers.xboxController.getRawButton(4)){
                     ram = !ram;
                     SmartDashboard.putBoolean("Charge mode", ram);
                     try {
@@ -94,25 +97,25 @@ public class Teleop {
                 
                 if (!direction){
                     if (!ram){
-                        References.Motors.leftDrive.set(-xboxController.getY());
-                        References.Motors.rightDrive.set(-xboxController.getRawAxis(5));
+                        References.Motors.leftDrive.set(-References.Controllers.xboxController.getY());
+                        References.Motors.rightDrive.set(-References.Controllers.xboxController.getRawAxis(5));
                     }else{
-                        References.Motors.leftDrive.set(-xboxController.getY());
-                        References.Motors.rightDrive.set(-xboxController.getY());
+                        References.Motors.leftDrive.set(-References.Controllers.xboxController.getY());
+                        References.Motors.rightDrive.set(-References.Controllers.xboxController.getY());
                     }
                 }else{
                     if (!ram){
-                        References.Motors.leftDrive.set(xboxController.getY());
-                        References.Motors.rightDrive.set(xboxController.getRawAxis(5));
+                        References.Motors.leftDrive.set(References.Controllers.xboxController.getY());
+                        References.Motors.rightDrive.set(References.Controllers.xboxController.getRawAxis(5));
                     }else{
-                        References.Motors.leftDrive.set(xboxController.getY());
-                        References.Motors.rightDrive.set(xboxController.getY());
+                        References.Motors.leftDrive.set(References.Controllers.xboxController.getY());
+                        References.Motors.rightDrive.set(References.Controllers.xboxController.getY());
                     }
                 }
             }else{
                 //References.motor1.set(left.getRawAxis(1));
                 //References.motor2.set(right.getRawAxis(1));
-                References.driveTrain.arcadeDrive(-joystick.getRawAxis(2), -joystick.getRawAxis(1));
+                References.driveTrain.arcadeDrive(-(References.Controllers.joystick.getRawAxis(2)/1), -References.Controllers.joystick.getRawAxis(1));
             }
         }
         //xServo.setAngle(0);

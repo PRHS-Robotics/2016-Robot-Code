@@ -11,6 +11,7 @@ package org.usfirst.frc.team4068.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.usfirst.frc.team4068.robot.lib.References;
+import org.usfirst.frc.team4068.robot.teamCode.Autonomous;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -73,14 +75,14 @@ public class Robot extends IterativeRobot {
             if (field.getType().equals(String.class) && field.isAnnotationPresent(autoProgram.class)){
                 if (field.getAnnotation(autoProgram.class).defaultProgram()){
                     try {
-                        autonomousPrograms.addDefault((String) field.get(null), field.get(null));
+                        autonomousPrograms.addDefault((String) field.get(new Autonomous()), field.get(new Autonomous()));
                     } catch (IllegalArgumentException
                             | IllegalAccessException e) {
                         e.printStackTrace();
                     }
                 }else{
                     try {
-                        autonomousPrograms.addObject((String) field.get(null), field.get(null));
+                        autonomousPrograms.addObject((String) field.get(new Autonomous()), field.get(null));
                     } catch (IllegalArgumentException
                             | IllegalAccessException e) {
                         e.printStackTrace();
@@ -110,6 +112,7 @@ public class Robot extends IterativeRobot {
      * This function is called at the start of autonomous
      */
 	public void autonomousInit(){
+	    /*
     	Method[] autoMethods = References.CLASS_AUTONOMOUS.getMethods();
     	for (Method method:autoMethods){
     	    if (method.isAnnotationPresent(RunCode.class) && method.getAnnotation(RunCode.class).loop()){
@@ -125,7 +128,7 @@ public class Robot extends IterativeRobot {
         	    runningThreads.add(t);
     	        }
     	    }else if(method.isAnnotationPresent(RunCode.class)){
-        	if (method.isAnnotationPresent(RunCode.class) && method.getAnnotation(RunCode.class).loop()){
+        	//if (method.isAnnotationPresent(RunCode.class) && method.getAnnotation(RunCode.class).loop()){
         	    if (method.isAnnotationPresent(runWithProgram.class)){
                         if (method.getAnnotation(runWithProgram.class).program().equals(autonomousPrograms.getSelected())){
                             RunOnce t = new RunOnce(method, References.CLASS_AUTONOMOUS);
@@ -137,7 +140,7 @@ public class Robot extends IterativeRobot {
                         t.start();
                         runningThreads.add(t);
                     }
-    	        }
+    	        //}
     	    }
     	}
     	while (this.m_ds.isEnabled() && isAutonomous()){}
@@ -145,6 +148,31 @@ public class Robot extends IterativeRobot {
     	    thread.terminate();
     	}
     	runningThreads.clear();
+    	*/
+	    /*
+	    Method[] autoMethods = References.CLASS_AUTONOMOUS.getMethods();
+	        for (Method method:autoMethods){
+	            if (method.isAnnotationPresent(RunCode.class) && method.getAnnotation(RunCode.class).loop()){
+	                RunLoop t = new RunLoop(method, References.CLASS_AUTONOMOUS);
+	                t.start();
+	                runningThreads.add(t);
+	            }else if(method.isAnnotationPresent(RunCode.class)){
+	                RunOnce t = new RunOnce(method, References.CLASS_AUTONOMOUS);
+	                t.start();
+	                runningThreads.add(t);
+	            }
+	        }
+	        while (this.m_ds.isEnabled() && isOperatorControl()){}
+	        for (RunThread thread:runningThreads){
+	            thread.terminate();
+	        }
+	        runningThreads.clear();
+	        */
+	    Timer timer = new Timer();
+	    timer.start();
+	    while(isAutonomous()&&isEnabled()&&(timer.get() <= 5)){
+	        References.driveTrain.arcadeDrive(0, .75);
+	    }
     }
 
     /**

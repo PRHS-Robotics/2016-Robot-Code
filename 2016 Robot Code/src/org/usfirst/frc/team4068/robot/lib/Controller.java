@@ -3,8 +3,6 @@ package org.usfirst.frc.team4068.robot.lib;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.usfirst.frc.team4068.robot.Robot;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -29,9 +27,9 @@ public class Controller extends Joystick{
         listeners.remove(listener);
     }
     
-    private void notifyListeners(int number){
+    private void notifyListeners(XBoxButton button){
         for(ButtonListener listener:listeners){
-            listener.buttonPressed(number);
+            listener.buttonPressed(button);
         }
     }
     
@@ -39,7 +37,7 @@ public class Controller extends Joystick{
         while(true){
             for(XBoxButton button:XBoxButton.values()){
                 if(this.getRawButton(button.buttonNumber)){
-                    notifyListeners(button.buttonNumber);
+                    notifyListeners(button);
                 }
             }
             DriverStation.getInstance().waitForData();
@@ -62,6 +60,15 @@ public class Controller extends Joystick{
         XBoxButton(int number){
             buttonNumber = number;
         }
+        
+        static XBoxButton forNumber(int number){
+            for(XBoxButton button:values()){
+                if(button.buttonNumber == number){
+                    return button;
+                }
+            }
+            return null;
+        }
     }
     
     public enum XBoxAxis{
@@ -78,6 +85,6 @@ public class Controller extends Joystick{
     }
     
     public interface ButtonListener{
-        public void buttonPressed(int number);
+        public void buttonPressed(XBoxButton button);
     }
 }
