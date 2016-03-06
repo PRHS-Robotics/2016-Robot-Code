@@ -10,13 +10,12 @@
 package org.usfirst.frc.team4068.robot.lib;
 
 import org.usfirst.frc.team4068.robot.lib.Log.Level;
-import org.usfirst.frc.team4068.robot.subsystems.DriveTrain;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.vision.AxisCamera;
 import edu.wpi.first.wpilibj.vision.USBCamera;
 
 @SuppressWarnings("rawtypes")
@@ -54,8 +53,9 @@ public class References {
 	}
 	
 	public static class Cameras{
-	    //public static final USBCamera driverCam = new USBCamera("cam1");
-	    //public static final USBCamera visionCam = new USBCamera("cam2");
+	    public static final USBCamera driverCam = new USBCamera("cam1");
+	    public static final USBCamera visionCam = new USBCamera("cam2");
+	    public static final AxisCamera backCam = new AxisCamera("10.40.68.11");
 	}
 	
 	public static class Motors{
