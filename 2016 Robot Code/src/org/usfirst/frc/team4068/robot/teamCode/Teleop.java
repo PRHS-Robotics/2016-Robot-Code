@@ -115,7 +115,7 @@ public class Teleop {
             }else{
                 //References.motor1.set(left.getRawAxis(1));
                 //References.motor2.set(right.getRawAxis(1));
-                References.driveTrain.arcadeDrive(-(References.Controllers.joystick.getRawAxis(2)/1), -References.Controllers.joystick.getRawAxis(1));
+                References.driveTrain.arcadeDrive(-(References.Controllers.joystick.getRawAxis(2)/1), -References.Controllers.joystick.getRawAxis(1)); // 2, 1 for practice
             }
         }
         //xServo.setAngle(0);

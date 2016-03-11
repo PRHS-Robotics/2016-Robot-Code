@@ -60,7 +60,7 @@ public class References {
 	
 	public static class Motors{
 	    public static Talon leftDrive = new Talon(1);//left
-	    public static Talon rightDrive = new Talon(7);//right
+	    public static Talon rightDrive = new Talon(7);//right (7 practice, 0 real)
 	    public static Talon seatMotor = new Talon(2);
 	    public static Talon launcherMotor1 = new Talon(3);
 	    public static Talon launcherMotor2 = new Talon(4);
