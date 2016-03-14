@@ -86,6 +86,7 @@ public class Global{
         SmartDashboard.putNumber("Camera", 0);
         
         while(true){
+            SmartDashboard.putBoolean("switch Camera", (References.Controllers.joystick.getRawButton(2)));
             if(!SwitchCamera.selection.equals((String)References.cameraSelector.getSelected())){
                 SwitchCamera.selection = (String)References.cameraSelector.getSelected();
                 if(SwitchCamera.selection.equals("zero")){
