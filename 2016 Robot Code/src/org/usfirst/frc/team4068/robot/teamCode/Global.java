@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4068.robot.teamCode;
 
 import org.usfirst.frc.team4068.robot.Robot.RunCode;
+import org.usfirst.frc.team4068.robot.lib.Log;
 import org.usfirst.frc.team4068.robot.lib.References;
 import org.usfirst.frc.team4068.robot.lib.References.AutoProgram;
 
@@ -31,6 +32,7 @@ public class Global{
         SmartDashboard.putData("Camera Selector", References.cameraSelector);
     }
     
+    /*
     private static class SwitchCamera extends Command{
         static String selection = "one";
 
@@ -69,6 +71,7 @@ public class Global{
             
         }
     }
+    */
     
     @RunCode(loop=false)
     public static void oldCameraCode(){
@@ -76,33 +79,47 @@ public class Global{
         References.Cameras.driverCam.openCamera();
         References.Cameras.driverCam.startCapture();
         References.Cameras.visionCam.openCamera();
-        Button switchCam = new JoystickButton(References.Controllers.joystick, 2);
-        switchCam.whenReleased(new SwitchCamera());
+        //Button switchCam = new JoystickButton(References.Controllers.joystick, 2);
+        //switchCam.whenReleased(new SwitchCamera());
         //button 2
-        References.Cameras.driverCam.setSize(1280, 720);
-        References.Cameras.visionCam.setSize(1280, 720);
+        //References.Cameras.driverCam.setSize(1280, 720);
+        //References.Cameras.visionCam.setSize(1280, 720);
         SmartDashboard.putBoolean("switch Camera", (References.Controllers.joystick.getRawButton(2)));
         SmartDashboard.putBoolean("switch Camera 2", (References.Controllers.joystick.getRawButton(3)));
         SmartDashboard.putNumber("Camera", 0);
         
+        int camera = 0;
+        int lastCamera = 0;
         while(true){
-            SmartDashboard.putBoolean("switch Camera", (References.Controllers.joystick.getRawButton(2)));
-            if(!SwitchCamera.selection.equals((String)References.cameraSelector.getSelected())){
-                SwitchCamera.selection = (String)References.cameraSelector.getSelected();
-                if(SwitchCamera.selection.equals("zero")){
+        	if (References.Controllers.joystick.getRawButton(2)){
+        		camera += (camera==2?-2:1);
+        		Log.logInfo(String.format("Camera Selector: %i", camera));
+        		try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+            
+            //if((!SwitchCamera.selection.equals((String)References.cameraSelector.getSelected()))||(lastCamera!=camera)){
+            if(lastCamera!=camera){
+        		//SwitchCamera.selection = (String)References.cameraSelector.getSelected();
+                lastCamera = camera;
+            	if(camera == 0){
                     References.Cameras.driverCam.stopCapture();
                     References.Cameras.visionCam.startCapture();
-                }else if (SwitchCamera.selection.equals("one")){
+                }else if (camera == 1){
                     References.Cameras.visionCam.stopCapture();
                     References.Cameras.driverCam.startCapture();
                 }
             }
             
-            if(SwitchCamera.selection.equals("zero")){
+            if(camera == 5){
                 References.Cameras.visionCam.getImage(frame);
-            }else if (SwitchCamera.selection.equals("one")){
+            }else if (camera == 1){
                 References.Cameras.driverCam.getImage(frame);
-            }else if (SwitchCamera.selection.equals("two")){
+            }else{
                 References.Cameras.backCam.getImage(frame);
             }
             CameraServer.getInstance().setImage(frame);
