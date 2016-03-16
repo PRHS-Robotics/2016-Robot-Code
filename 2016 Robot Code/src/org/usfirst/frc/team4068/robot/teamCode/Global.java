@@ -1,7 +1,6 @@
 package org.usfirst.frc.team4068.robot.teamCode;
 
 import org.usfirst.frc.team4068.robot.Robot.RunCode;
-import org.usfirst.frc.team4068.robot.lib.Log;
 import org.usfirst.frc.team4068.robot.lib.References;
 import org.usfirst.frc.team4068.robot.lib.References.AutoProgram;
 
@@ -32,47 +31,6 @@ public class Global{
         SmartDashboard.putData("Camera Selector", References.cameraSelector);
     }
     
-    /*
-    private static class SwitchCamera extends Command{
-        static String selection = "one";
-
-        @Override
-        protected void initialize() {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        protected void execute() {
-            if (selection == "zero"){
-                selection = "one";
-            }else if (selection == "one"){
-                selection = "two";
-            }else if (selection == "two"){
-                selection = "one";
-            }
-        }
-
-        @Override
-        protected boolean isFinished() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        @Override
-        protected void end() {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        protected void interrupted() {
-            // TODO Auto-generated method stub
-            
-        }
-    }
-    */
-    
     @RunCode(loop=false)
     public static void oldCameraCode(){
         Image frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
@@ -82,44 +40,48 @@ public class Global{
         //Button switchCam = new JoystickButton(References.Controllers.joystick, 2);
         //switchCam.whenReleased(new SwitchCamera());
         //button 2
-        //References.Cameras.driverCam.setSize(1280, 720);
-        //References.Cameras.visionCam.setSize(1280, 720);
+        References.Cameras.driverCam.setSize(1280, 720);
+        References.Cameras.visionCam.setSize(1280, 720);
         SmartDashboard.putBoolean("switch Camera", (References.Controllers.joystick.getRawButton(2)));
         SmartDashboard.putBoolean("switch Camera 2", (References.Controllers.joystick.getRawButton(3)));
         SmartDashboard.putNumber("Camera", 0);
         
-        int camera = 0;
-        int lastCamera = 0;
+        String selection = "zero";
+        boolean changed = false;
         while(true){
-        	if (References.Controllers.joystick.getRawButton(2)){
-        		camera += (camera==2?-2:1);
-        		Log.logInfo(String.format("Camera Selector: %i", camera));
-        		try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-            
-            //if((!SwitchCamera.selection.equals((String)References.cameraSelector.getSelected()))||(lastCamera!=camera)){
-            if(lastCamera!=camera){
-        		//SwitchCamera.selection = (String)References.cameraSelector.getSelected();
-                lastCamera = camera;
-            	if(camera == 0){
+            SmartDashboard.putBoolean("switch Camera", (References.Controllers.joystick.getRawButton(2)));
+            if(References.Controllers.joystick.getRawButton(2)){
+            	selection =  "zero";
+            	
+            	changed = true;
+            }
+            if(References.Controllers.coDriver.getRawButton(2)){
+            	selection = "one";
+            	changed = true;
+            }
+            if(References.Controllers.coDriver.getRawButton(1)){
+            	selection = "two";
+            	changed = true;
+            }
+            if((!selection.equals((String)References.cameraSelector.getSelected()))||changed){
+                if(!selection.equals((String)References.cameraSelector.getSelected())){
+                	selection = (String)References.cameraSelector.getSelected();
+                }
+                System.out.println(selection);
+                if(selection.equals("zero")){
                     References.Cameras.driverCam.stopCapture();
                     References.Cameras.visionCam.startCapture();
-                }else if (camera == 1){
+                }else if (selection.equals("one")){
                     References.Cameras.visionCam.stopCapture();
                     References.Cameras.driverCam.startCapture();
                 }
             }
             
-            if(camera == 5){
+            if(selection.equals("zero")){
                 References.Cameras.visionCam.getImage(frame);
-            }else if (camera == 1){
+            }else if (selection.equals("one")){
                 References.Cameras.driverCam.getImage(frame);
-            }else{
+            }else if (selection.equals("two")){
                 References.Cameras.backCam.getImage(frame);
             }
             CameraServer.getInstance().setImage(frame);
