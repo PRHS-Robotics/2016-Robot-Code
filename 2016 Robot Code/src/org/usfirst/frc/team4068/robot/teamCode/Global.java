@@ -19,7 +19,8 @@ public class Global{
     
     @RunCode(loop=false)
     public static void initRobot(){ //initializes robot - use this not robotInit in Robot.java
-        References.autoPrograms.addDefault("Do nothing", null);
+        References.arduino.sendData("Comm");
+        References.autoPrograms.addDefault("Do nothing", References.AutoProgram.LOW_BAR);
         for(AutoProgram p : References.AutoProgram.values()){
             References.autoPrograms.addObject(p.name(), p);
         }
@@ -29,6 +30,30 @@ public class Global{
         References.cameraSelector.addObject("Front - side", "zero");
         References.cameraSelector.addObject("Back", "two");
         SmartDashboard.putData("Camera Selector", References.cameraSelector);
+        References.robotInit = true;
+    }
+    
+    @RunCode(loop=false)
+    public static void arduinoCode(){
+        double voltage;
+        int volts;
+        int mV;
+        int count = 0;
+        while(true){
+            count++;
+            if (count > 1000){
+                References.arduino.sendData("Comm");
+                count = 0;
+            }
+            //This whole block of code can be shortened to three lines, but I'm too lazy to go and 
+            //change the String.format arguments, so deal with it.
+            voltage = References.ds.getBatteryVoltage();
+            volts = (int) Math.floor(voltage);
+            mV = (int) Math.round((voltage - volts) * 100);
+            //System.out.println(volts);
+            String parseVoltage = String.format("wbv%d.%dV", volts, mV);
+            References.arduino.sendData(parseVoltage);
+        }
     }
     
     @RunCode(loop=false)

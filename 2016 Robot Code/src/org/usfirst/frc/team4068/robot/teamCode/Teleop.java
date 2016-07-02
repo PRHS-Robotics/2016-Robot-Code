@@ -37,12 +37,14 @@ public class Teleop {
     
     @RunCode(loop=true)
     public static void runLauncher(){
-        References.Motors.seatMotor.set(-References.Controllers.coDriver.getRawAxis(5));
+        References.Motors.seatMotor.set(References.Controllers.coDriver.getRawAxis(5));
         
-        if(References.Controllers.coDriver.getRawButton(1)){
-            References.Motors.launcherServo.set(0);
+        if(References.Controllers.coDriver.getRawButton(6)){
+            //References.Motors.launcherServo.set(100); //SERVO
+            References.Motors.launcherServo.setAngle(15);
         }else{
-            References.Motors.launcherServo.set(100);
+            //References.Motors.launcherServo.set(90); //SERVO
+            References.Motors.launcherServo.setAngle(100);
         }
         
         /*
@@ -51,8 +53,14 @@ public class Teleop {
             References.Motors.launcherMotor2.set(2*References.Controllers.coDriver.getRawAxis(3));
         }
         */
-        References.Motors.launcherMotor1.set(-References.Controllers.coDriver.getRawAxis(1));
-        References.Motors.launcherMotor2.set(References.Controllers.coDriver.getRawAxis(1));
+        //SmartDashboard.putNumber("triggers", References.Controllers.coDriver.getRawAxis(2));
+        if(References.Controllers.coDriver.getRawAxis(2)>0){
+            References.Motors.launcherMotor1.set(-References.Controllers.coDriver.getRawAxis(2));
+            References.Motors.launcherMotor2.set(References.Controllers.coDriver.getRawAxis(2));
+        }else{
+            References.Motors.launcherMotor1.set(References.Controllers.coDriver.getRawAxis(3));
+            References.Motors.launcherMotor2.set(-References.Controllers.coDriver.getRawAxis(3));
+        }
     }
     
     //120 - 160
@@ -115,7 +123,7 @@ public class Teleop {
             }else{
                 //References.motor1.set(left.getRawAxis(1));
                 //References.motor2.set(right.getRawAxis(1));
-                References.driveTrain.arcadeDrive(-(References.Controllers.joystick.getRawAxis(2)/1), -References.Controllers.joystick.getRawAxis(1)); // 2, 1 for practice
+                References.driveTrain.arcadeDrive(-(References.Controllers.joystick.getRawAxis(1)/1), -References.Controllers.joystick.getRawAxis(2)/1); // 2, 1 for practice
             }
         }
         //xServo.setAngle(0);

@@ -70,6 +70,7 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() { //use the initRobot method in Global.java to put in initial set up tasks
+        References.ds = this.m_ds;
         Field[] autoFields = References.CLASS_AUTONOMOUS.getFields();
         for (Field field:autoFields){
             if (field.getType().equals(String.class) && field.isAnnotationPresent(autoProgram.class)){
@@ -168,11 +169,14 @@ public class Robot extends IterativeRobot {
 	        }
 	        runningThreads.clear();
 	        */
+	    /*
 	    Timer timer = new Timer();
 	    timer.start();
 	    while(isAutonomous()&&isEnabled()&&(timer.get() <= 5)){
 	        References.driveTrain.arcadeDrive(0, .75);
 	    }
+	    */
+	    Autonomous.autoProgramLowBar();
     }
 
     /**
@@ -222,7 +226,10 @@ public class Robot extends IterativeRobot {
     }
     
     public void disabledInit(){
-        
+        References.Motors.launcherMotor1.set(0);
+        References.Motors.launcherMotor2.set(0);
+        References.Motors.leftDrive.set(0);
+        References.Motors.rightDrive.set(0);
     }
     
     public void disabledPeriodic(){
@@ -286,24 +293,24 @@ public class Robot extends IterativeRobot {
 		}
 		
 		public void run(){
-			m.setAccessible(true);
-			try {
-				while(run && !Thread.interrupted()){
-				    if (c.isInstance(teleopClass)){
-				        m.invoke(teleopClass, (Object[])null);
-				    }else if(c.isInstance(autoClass)){
-				        m.invoke(autoClass, (Object[])null);
-				    }else if(c.isInstance(testClass)){
-				        m.invoke(testClass, (Object[])null);
-                                    }
-				}
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
+		    m.setAccessible(true);
+		    try {
+		        while(run && !Thread.interrupted()){
+		            if (c.isInstance(teleopClass)){
+		                m.invoke(teleopClass, (Object[])null);
+		            }else if(c.isInstance(autoClass)){
+		                m.invoke(autoClass, (Object[])null);
+		            }else if(c.isInstance(testClass)){
+		                m.invoke(testClass, (Object[])null);
+		            }
+		        }
+		    } catch (IllegalAccessException e) {
+		        e.printStackTrace();
+		    } catch (IllegalArgumentException e) {
+		        e.printStackTrace();
+		    } catch (InvocationTargetException e) {
+		        e.printStackTrace();
+		    }
 		}
 		
 		public void terminate(){
@@ -362,4 +369,31 @@ public class Robot extends IterativeRobot {
 			this.setUncaughtExceptionHandler(h);
 		}
 	}
+	public enum State{
+	        teleop("Teleop", 0, "wsT"),
+	        autonomous("Autonomous", 1, "wsA"),
+	        test("Test", 2, "wst"),
+	        disabled("Disabled", 3, "wsD");
+	        
+	        String name;
+	        int number;
+	        String arduinoCode;
+	        State(String name, int number, String arduinoCode){
+	            this.name = name;
+	            this.number = number;
+	            this.arduinoCode = arduinoCode;
+	        }
+	        
+	        public String getName(){
+	            return name;
+	        }
+	        
+	        public int getNumber(){
+	            return number;
+	        }
+	        
+	        public String getArduinoCode(){
+	            return arduinoCode;
+	        }
+	    }
 }

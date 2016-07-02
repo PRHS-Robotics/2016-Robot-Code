@@ -10,6 +10,10 @@
 package org.usfirst.frc.team4068.robot.lib;
 
 import org.usfirst.frc.team4068.robot.lib.Log.Level;
+import org.usfirst.frc.team4068.robot.subsystems.Arduino;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Servo;
@@ -23,6 +27,9 @@ public class References {
     //public static DriveTrain driveTrain = new DriveTrain(Motors.leftDrive, Motors.rightDrive);
     public static SendableChooser autoPrograms = new SendableChooser();
     public static SendableChooser cameraSelector = new SendableChooser();
+    public static Arduino arduino = new Arduino(I2C.Port.kMXP, 8);
+    public static DriverStation ds = null;
+    public static boolean robotInit = false;
     public static RobotDrive driveTrain = new RobotDrive(References.Motors.leftDrive, References.Motors.rightDrive);
 	public static Class CLASS_AUTONOMOUS;
 	public static Class CLASS_TELEOP;
@@ -53,14 +60,14 @@ public class References {
 	}
 	
 	public static class Cameras{
-	    public static final USBCamera driverCam = new USBCamera("cam1");
-	    public static final USBCamera visionCam = new USBCamera("cam2");
+	    public static final USBCamera driverCam = new USBCamera("cam0");
+	    public static final USBCamera visionCam = new USBCamera("cam1");
 	    public static final AxisCamera backCam = new AxisCamera("10.40.68.11");
 	}
 	
 	public static class Motors{
 	    public static Talon leftDrive = new Talon(1);//left
-	    public static Talon rightDrive = new Talon(7);//right (7 practice, 0 real)
+	    public static Talon rightDrive = new Talon(0);//right (7 practice, 0 real)
 	    public static Talon seatMotor = new Talon(2);
 	    public static Talon launcherMotor1 = new Talon(3);
 	    public static Talon launcherMotor2 = new Talon(4);
@@ -84,6 +91,9 @@ public class References {
 	        }
 	        public void addToChooser(SendableChooser programs){
 	            programs.addObject(name, this);
+	        }
+	        public String getName(){
+	            return name;
 	        }
 	    }
 }

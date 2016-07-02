@@ -9,11 +9,35 @@ public class Autonomous {
     
     @RunCode(loop=false)
     public static void autoProgramLowBar(){
-        if(References.autoPrograms.getSelected().equals(References.AutoProgram.LOW_BAR_AND_SHOOT)){
-            while(true){
-                References.driveTrain.arcadeDrive(1, 0);
+        while(!References.robotInit){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
+        References.AutoProgram autoProgram = (References.AutoProgram)References.autoPrograms.getSelected();
+        System.out.println(autoProgram.getName());
+        if(autoProgram.equals(References.AutoProgram.LOW_BAR_AND_SHOOT)){
+            Timer timer = new Timer();
+            timer.start();
+            while(timer.get() <= 5){
+                for(int i=0;i<100;i++){
+                    References.driveTrain.arcadeDrive(1, 0);
+                }
+            }
+            
+        }else if(autoProgram.equals(References.AutoProgram.LOW_BAR)){
+            Timer timer = new Timer();
+            timer.start();
+            while(timer.get() <= 5){
+                for(int i=0;i<100;i++){
+                    References.driveTrain.arcadeDrive(1, 0);
+                }
+            }
+        }
+        
     }
     
     
